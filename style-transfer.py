@@ -5,6 +5,7 @@
 
 
 # Imports
+import os
 import numpy as np
 from PIL import Image
 import requests
@@ -21,7 +22,7 @@ from scipy.optimize import fmin_l_bfgs_b
 
 
 # Hyperparams
-ITERATIONS = 10
+ITERATIONS = 1
 CHANNELS = 3
 IMAGE_SIZE = 50
 IMAGE_WIDTH = IMAGE_SIZE
@@ -42,18 +43,25 @@ style_image_path = "style.png"
 output_image_path = "output.png"
 combined_image_path = "combined.png"
 
+workdir = os.getcwd()
+
 # San Francisco
-san_francisco_image_path = "https://i.imgur.com/O8KKa5g.jpg"
+#san_francisco_image_path = "https://i.imgur.com/O8KKa5g.jpg"
+content = "input_content.jpg"
+content_path = os.path.join(workdir, content)
 
 # Warsaw by Tytus Brzozowski, http://t-b.pl
-tytus_image_path = "https://i.imgur.com/WC4zIbK.jpg"
+#tytus_image_path = "https://i.imgur.com/WC4zIbK.jpg"
+style = "input_style.jpg"
+style_path = os.path.join(workdir, style)
 
 
 # In[4]:
 
 
 #Input visualization 
-input_image = Image.open(BytesIO(requests.get(san_francisco_image_path).content))
+#input_image = Image.open(BytesIO(requests.get(san_francisco_image_path).content))
+input_image = Image.open(content_path)
 input_image = input_image.resize((IMAGE_WIDTH, IMAGE_HEIGHT))
 input_image.save(input_image_path)
 input_image
@@ -63,7 +71,8 @@ input_image
 
 
 # Style visualization 
-style_image = Image.open(BytesIO(requests.get(tytus_image_path).content))
+#style_image = Image.open(BytesIO(requests.get(tytus_image_path).content))
+style_image = Image.open(style_path)
 style_image = style_image.resize((IMAGE_WIDTH, IMAGE_HEIGHT))
 style_image.save(style_image_path)
 style_image
