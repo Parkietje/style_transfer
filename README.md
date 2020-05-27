@@ -14,7 +14,7 @@ Check out corresponding Medium article:
 [Style Transfer - Styling Images with Convolutional Neural Networks](https://towardsdatascience.com/style-transfer-styling-images-with-convolutional-neural-networks-7d215b58f461)
 
 <h3 align="center">
-  <img src="assets/combined.png">
+  <img src="assets/combined2.png">
 </h3>
 
 # How does it work?
@@ -32,14 +32,14 @@ Check out corresponding Medium article:
 ## Input
 
 <h3>
-  <img src="assets/input.png" width="500">
+  <img src="assets/input2.png" width="500">
 </h3>
 
 
 ## Style
  
 <h3>
-  <img src="assets/style.png" width="500">
+  <img src="assets/style2.png" width="500">
 </h3>
 
 
