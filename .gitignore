@@ -106,7 +106,6 @@ venv.bak/
 .mypy_cache/
 
 #results
-assets/*
 results/*
 input.png
 style.png
