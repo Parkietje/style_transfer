@@ -104,3 +104,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+#results
+assets/*
+results/*
+input.png
+style.png
+output.png
+combined.png
