@@ -38,29 +38,28 @@ TOTAL_VARIATION_LOSS_FACTOR = 1.25
 
 
 # Paths
-input_image_path = "input.png"
-style_image_path = "style.png"
-output_image_path = "output.png"
-combined_image_path = "combined.png"
-
 workdir = os.getcwd()
+output_folder = "results"
+input_image_path = os.path.join(workdir, output_folder, "input.png")
+style_image_path = os.path.join(workdir, output_folder, "style.png")
+output_image_path = os.path.join(workdir, output_folder, "output.png")
+combined_image_path = os.path.join(workdir, output_folder, "combined.png")
 
-# San Francisco
-#san_francisco_image_path = "https://i.imgur.com/O8KKa5g.jpg"
-content = "input_content.jpg"
-content_path = os.path.join(workdir, content)
+# Content
+content = "content.jpg"
+content_folder = "input"
+content_path = os.path.join(workdir, content_folder, content)
 
-# Warsaw by Tytus Brzozowski, http://t-b.pl
-#tytus_image_path = "https://i.imgur.com/WC4zIbK.jpg"
-style = "input_style.jpg"
-style_path = os.path.join(workdir, style)
+# Style
+style = "style.jpg"
+style_folder = "input"
+style_path = os.path.join(workdir, style_folder,  style)
 
 
 # In[4]:
 
 
 #Input visualization 
-#input_image = Image.open(BytesIO(requests.get(san_francisco_image_path).content))
 input_image = Image.open(content_path)
 input_image = input_image.resize((IMAGE_WIDTH, IMAGE_HEIGHT))
 input_image.save(input_image_path)
@@ -71,7 +70,6 @@ input_image
 
 
 # Style visualization 
-#style_image = Image.open(BytesIO(requests.get(tytus_image_path).content))
 style_image = Image.open(style_path)
 style_image = style_image.resize((IMAGE_WIDTH, IMAGE_HEIGHT))
 style_image.save(style_image_path)
@@ -222,3 +220,7 @@ for image in map(Image.open, [input_image_path, style_image_path, output_image_p
 combined.save(combined_image_path)
 combined
 
+# In[15]:
+
+#teardown
+print("test")

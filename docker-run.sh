@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run style-transfer:latest
+docker run -v /Users/parkietje/Desktop/input:/input -v /Users/parkietje/Desktop/results:/results style-transfer:latest

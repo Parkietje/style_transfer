@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -f Dockerfile style-transfer:latest .
+docker build -f Dockerfile -t style-transfer:latest .
