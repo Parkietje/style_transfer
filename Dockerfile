@@ -7,4 +7,4 @@ RUN pip3 install -r requirements.txt
 
 COPY style-transfer.py .
 
-CMD ["python", "style-transfer.py"]
+ENTRYPOINT ["python", "style-transfer.py"]

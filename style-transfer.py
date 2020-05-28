@@ -3,6 +3,44 @@
 
 # In[1]:
 
+#CMD ARGS
+import argparse, sys
+
+MIN_IMAGE_SIZE = 50
+MAX_IMAGE_SIZE = 1000
+MIN_ITERATIONS = 1
+MAX_ITERATIONS = 20
+
+parser=argparse.ArgumentParser()
+parser.add_argument('-i', '--iterations', type=int, help='number of iterations')
+parser.add_argument('-s', '--size', type=int, help='image size')
+args=parser.parse_args()
+
+#return errors if wrongs args supplied
+if args.iterations is None:
+    print(parser.format_help())
+    sys.exit('Error: please specify number of iterations')
+
+if args.size is None:
+    print(parser.format_help())
+    sys.exit('Error: please specify image size')
+
+if args.size < MIN_IMAGE_SIZE:
+    print(parser.format_help())
+    sys.exit('Error: Image size too small')
+      
+if args.size > MAX_IMAGE_SIZE:
+    print(parser.format_help())
+    sys.exit('Error: Image size too big')
+
+if args.iterations < MIN_ITERATIONS:
+    print(parser.format_help())
+    sys.exit('Error: minimum of 1 iteration required')
+
+if args.iterations > MAX_ITERATIONS:
+    print(parser.format_help())
+    sys.exit('Error: too many iterations')
+
 
 # Imports
 import os
@@ -20,11 +58,10 @@ from scipy.optimize import fmin_l_bfgs_b
 
 # In[2]:
 
-
 # Hyperparams
-ITERATIONS = 1
+ITERATIONS = args.iterations
 CHANNELS = 3
-IMAGE_SIZE = 50
+IMAGE_SIZE = args.size
 IMAGE_WIDTH = IMAGE_SIZE
 IMAGE_HEIGHT = IMAGE_SIZE
 IMAGENET_MEAN_RGB_VALUES = [123.68, 116.779, 103.939]
@@ -35,7 +72,6 @@ TOTAL_VARIATION_LOSS_FACTOR = 1.25
 
 
 # In[3]:
-
 
 # Paths
 workdir = os.getcwd()
