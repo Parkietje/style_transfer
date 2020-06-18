@@ -114,3 +114,6 @@ combined.png
 
 #visual studio code
 .vscode
+
+#testing inputs
+input/*

@@ -54,6 +54,7 @@ from keras.models import Model
 from keras.applications.vgg16 import VGG16
 
 from scipy.optimize import fmin_l_bfgs_b
+from pathlib import Path
 
 
 # In[2]:
@@ -85,11 +86,22 @@ combined_image_path = os.path.join(workdir, output_folder, "combined.png")
 content = "content.jpg"
 content_folder = "input"
 content_path = os.path.join(workdir, content_folder, content)
+content_file = Path(content_path)
+#my_file = Path("/path/to/file")
+if not content_file.is_file():
+    content = "content.jpeg"
+    content_path = os.path.join(workdir, content_folder, content)
+
+#
 
 # Style
 style = "style.jpg"
 style_folder = "input"
 style_path = os.path.join(workdir, style_folder,  style)
+style_file = Path(style_path)
+if not style_file.is_file():
+    style = "style.jpeg"
+    style_path = os.path.join(workdir, style_folder, style)
 
 
 # In[4]:
