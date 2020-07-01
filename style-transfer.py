@@ -10,8 +10,10 @@ from keras.models import Model
 from keras.applications.vgg16 import VGG16
 
 from scipy.optimize import fmin_l_bfgs_b
-from pathlib import Path
 
+import tensorflow as tf
+
+tf.compat.v1.disable_eager_execution()
 
 # In[2]:
 
