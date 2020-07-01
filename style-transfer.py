@@ -1,47 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-#CMD ARGS
-import argparse, sys
-
-MIN_IMAGE_SIZE = 50
-MAX_IMAGE_SIZE = 1000
-MIN_ITERATIONS = 1
-MAX_ITERATIONS = 20
-
-parser=argparse.ArgumentParser()
-parser.add_argument('-i', '--iterations', type=int, help='number of iterations')
-parser.add_argument('-s', '--size', type=int, help='image size')
-args=parser.parse_args()
-
-#return errors if wrongs args supplied
-if args.iterations is None:
-    print(parser.format_help())
-    sys.exit('Error: please specify number of iterations')
-
-if args.size is None:
-    print(parser.format_help())
-    sys.exit('Error: please specify image size')
-
-if args.size < MIN_IMAGE_SIZE:
-    print(parser.format_help())
-    sys.exit('Error: Image size too small')
-      
-if args.size > MAX_IMAGE_SIZE:
-    print(parser.format_help())
-    sys.exit('Error: Image size too big')
-
-if args.iterations < MIN_ITERATIONS:
-    print(parser.format_help())
-    sys.exit('Error: minimum of 1 iteration required')
-
-if args.iterations > MAX_ITERATIONS:
-    print(parser.format_help())
-    sys.exit('Error: too many iterations')
-
-
 # Imports
 import os
 import numpy as np
@@ -60,9 +16,9 @@ from pathlib import Path
 # In[2]:
 
 # Hyperparams
-ITERATIONS = args.iterations
+ITERATIONS = 1
 CHANNELS = 3
-IMAGE_SIZE = args.size
+IMAGE_SIZE = 50
 IMAGE_WIDTH = IMAGE_SIZE
 IMAGE_HEIGHT = IMAGE_SIZE
 IMAGENET_MEAN_RGB_VALUES = [123.68, 116.779, 103.939]
@@ -75,56 +31,28 @@ TOTAL_VARIATION_LOSS_FACTOR = 1.25
 # In[3]:
 
 # Paths
-workdir = os.getcwd()
-output_folder = "results"
-input_image_path = os.path.join(workdir, output_folder, "input.png")
-style_image_path = os.path.join(workdir, output_folder, "style.png")
-output_image_path = os.path.join(workdir, output_folder, "output.png")
-combined_image_path = os.path.join(workdir, output_folder, "combined.png")
+input_image_path = "input.png"
+style_image_path = "style.png"
+output_image_path = "output.png"
+combined_image_path = "combined.png"
 
-# Content
-content = "content.jpg"
-content_folder = "input"
-content_path = os.path.join(workdir, content_folder, content)
-content_file = Path(content_path)
-#my_file = Path("/path/to/file")
-if not content_file.is_file():
-    content = "content.jpeg"
-    content_path = os.path.join(workdir, content_folder, content)
+# San Francisco
+san_francisco_image_path = "https://www.economist.com/sites/default/files/images/print-edition/20180602_USP001_0.jpg"
 
-#
-
-# Style
-style = "style.jpg"
-style_folder = "input"
-style_path = os.path.join(workdir, style_folder,  style)
-style_file = Path(style_path)
-if not style_file.is_file():
-    style = "style.jpeg"
-    style_path = os.path.join(workdir, style_folder, style)
-
-
-# In[4]:
+# Warsaw by Tytus Brzozowski, http://t-b.pl
+tytus_image_path = "http://meetingbenches.com/wp-content/flagallery/tytus-brzozowski-polish-architect-and-watercolorist-a-fairy-tale-in-warsaw/tytus_brzozowski_13.jpg"
 
 
 #Input visualization 
-input_image = Image.open(content_path)
+input_image = Image.open(BytesIO(requests.get(san_francisco_image_path).content))
 input_image = input_image.resize((IMAGE_WIDTH, IMAGE_HEIGHT))
 input_image.save(input_image_path)
-input_image
-
-
-# In[5]:
 
 
 # Style visualization 
-style_image = Image.open(style_path)
+style_image = Image.open(BytesIO(requests.get(tytus_image_path).content))
 style_image = style_image.resize((IMAGE_WIDTH, IMAGE_HEIGHT))
 style_image.save(style_image_path)
-style_image
-
-
-# In[6]:
 
 
 # Data normalization and reshaping from RGB to BGR
@@ -143,9 +71,6 @@ style_image_array[:, :, :, 2] -= IMAGENET_MEAN_RGB_VALUES[0]
 style_image_array = style_image_array[:, :, :, ::-1]
 
 
-# In[7]:
-
-
 # Model
 input_image = backend.variable(input_image_array)
 style_image = backend.variable(style_image_array)
@@ -153,9 +78,6 @@ combination_image = backend.placeholder((1, IMAGE_HEIGHT, IMAGE_SIZE, 3))
 
 input_tensor = backend.concatenate([input_image,style_image,combination_image], axis=0)
 model = VGG16(input_tensor=input_tensor, include_top=False)
-
-
-# In[8]:
 
 
 def content_loss(content, combination):
@@ -172,17 +94,10 @@ loss = backend.variable(0.)
 loss = loss + CONTENT_WEIGHT * content_loss(content_image_features,combination_features)
 
 
-# In[9]:
-
-
 def gram_matrix(x):
     features = backend.batch_flatten(backend.permute_dimensions(x, (2, 0, 1)))
     gram = backend.dot(features, backend.transpose(features))
     return gram
-
-
-# In[10]:
-
 
 def compute_style_loss(style, combination):
     style = gram_matrix(style)
@@ -198,20 +113,12 @@ for layer_name in style_layers:
     style_loss = compute_style_loss(style_features, combination_features)
     loss += (STYLE_WEIGHT / len(style_layers)) * style_loss
 
-
-# In[11]:
-
-
 def total_variation_loss(x):
     a = backend.square(x[:, :IMAGE_HEIGHT-1, :IMAGE_WIDTH-1, :] - x[:, 1:, :IMAGE_WIDTH-1, :])
     b = backend.square(x[:, :IMAGE_HEIGHT-1, :IMAGE_WIDTH-1, :] - x[:, :IMAGE_HEIGHT-1, 1:, :])
     return backend.sum(backend.pow(a + b, TOTAL_VARIATION_LOSS_FACTOR))
 
 loss += TOTAL_VARIATION_WEIGHT * total_variation_loss(combination_image)
-
-
-# In[12]:
-
 
 outputs = [loss]
 outputs += backend.gradients(loss, combination_image)
@@ -236,9 +143,6 @@ class Evaluator:
 evaluator = Evaluator()
 
 
-# In[13]:
-
-
 x = np.random.uniform(0, 255, (1, IMAGE_HEIGHT, IMAGE_WIDTH, 3)) - 128.
 
 for i in range(ITERATIONS):
@@ -253,11 +157,6 @@ x[:, :, 2] += IMAGENET_MEAN_RGB_VALUES[0]
 x = np.clip(x, 0, 255).astype("uint8")
 output_image = Image.fromarray(x)
 output_image.save(output_image_path)
-output_image
-
-
-# In[14]:
-
 
 # Visualizing combined results
 combined = Image.new("RGB", (IMAGE_WIDTH*3, IMAGE_HEIGHT))
@@ -266,9 +165,3 @@ for image in map(Image.open, [input_image_path, style_image_path, output_image_p
     combined.paste(image, (x_offset, 0))
     x_offset += IMAGE_WIDTH
 combined.save(combined_image_path)
-combined
-
-# In[15]:
-
-#teardown
-print("test")
